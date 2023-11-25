@@ -14,7 +14,8 @@ const pool = mariadb.createPool({
   connectionLimit: 5
 });
 //------------------------------------------------------------------------------JSONS API--------------------------------------------------------------------------//
-let categories = require('./emercado-main/cats/cat.json');
+let cats = require('./emercado-main/cats/cat.json');
+//let cats_products = require('./emercado-main/cats_products/');
 //---------------------------------------------------------------------------------Uses-------------------------------------------------------------------------------------------------------------------------------------------------//
 app.use(express.json());
 app.use(cors());
@@ -74,12 +75,18 @@ app.use('/categories', (req, res, next)=>{
   }catch (error){
     res.status(401).json({message: "Debes loguear para acceder"});
   }
-})
+});
 //--------------------------------------------------------------------------GET CATEGORIES-------------------------------------------------------------------------------------------//
 app.get('/categories', (req, res)=>{
-  res.json(categories);
+  res.json(cats);
+});
+//-----------------------------------------------------------------------GET CATEGORIES x ID-----------------------------------------------------------------------------//
+app.get('categories/:id', (req, res)=>{
+  let id = req.params.id;
+  let cats_products = require(`./emercado-main/cars_products/${id}`);
+  res.json(cats_products);
 })
 //----------------------------------------------------------------Define el puerto que escuchara el servidor-------------------------------------------------------------------------------------------------------------//
 app.listen(port, ()=>{
   console.log(`Servidor corriendo en https://localhost:${port}`);
-})
+});
