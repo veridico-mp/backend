@@ -4,7 +4,7 @@
   "description": "Otro intento",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Veridico",
@@ -13,7 +13,9 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mariadb": "^3.2.2",
+    "mariadb": "^3.2.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.0.1"
   }
 }
