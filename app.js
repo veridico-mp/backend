@@ -15,7 +15,7 @@ const pool = mariadb.createPool({
 });
 //------------------------------------------------------------------------------JSONS API--------------------------------------------------------------------------//
 let cats = require('./emercado-main/cats/cat.json');
-//let cats_products = require('./emercado-main/cats_products/');
+let cats_products = require('./emercado-main/cats_products/101.json');
 //---------------------------------------------------------------------------------Uses-------------------------------------------------------------------------------------------------------------------------------------------------//
 app.use(express.json());
 app.use(cors());
@@ -66,8 +66,26 @@ app.post("/login", async (req, res) => {
     if (conn) conn.release(); //release to pool
   }
 });
-//--------------------------------------------------------------------Middleware categories--------------------------------------------------------------------------//
+//--------------------------------------------------------------------Middleware GET--------------------------------------------------------------------------//
 app.use('/categories', (req, res, next)=>{
+  try{
+    let decoded = jwt.verify(req.headers["access-token"], key);
+    console.log(decoded);
+    next();
+  }catch (error){
+    res.status(401).json({message: "Debes loguear para acceder"});
+  }
+});
+app.use('/product', (req, res, next)=>{
+  try{
+    let decoded = jwt.verify(req.headers["access-token"], key);
+    console.log(decoded);
+    next();
+  }catch (error){
+    res.status(401).json({message: "Debes loguear para acceder"});
+  }
+});
+app.use('/comments', (req, res, next)=>{
   try{
     let decoded = jwt.verify(req.headers["access-token"], key);
     console.log(decoded);
@@ -81,10 +99,28 @@ app.get('/categories', (req, res)=>{
   res.json(cats);
 });
 //-----------------------------------------------------------------------GET CATEGORIES x ID-----------------------------------------------------------------------------//
-app.get('categories/:id', (req, res)=>{
-  let id = req.params.id;
-  let cats_products = require(`./emercado-main/cars_products/${id}`);
-  res.json(cats_products);
+app.get('/categories/:id', (req, res)=>{
+  let cats_products = require(`./emercado-main/cats_products/${req.params.id}.json`);
+  res.json(cats_products.products);
+});
+//-------------------------------------------------------------------------GET PRODUCTS x ID-------------------------------------------------------------------------------//
+app.get('/product/:id', (req, res)=>{
+  let products = require(`./emercado-main/products/${req.params.id}.json`);
+  res.json({
+    id: products.id,
+    name: products.name,
+    description: products.description,
+    cost: products.cost,
+    currency: products.currency,
+    soldCount: products.soldCount,
+    category: products.category,
+    images: products.images,
+    relatedProducts: products.relatedProducts});
+})
+//--------------------------------------------------------------------------GET COMMENTS x ID-------------------------------------------------------------------------/
+app.get('/comments/:id', (req, res)=>{
+  let products_comments = require(`./emercado-main/products_comments/${req.params.id}.json`);
+  res.json(products_comments);
 })
 //----------------------------------------------------------------Define el puerto que escuchara el servidor-------------------------------------------------------------------------------------------------------------//
 app.listen(port, ()=>{
